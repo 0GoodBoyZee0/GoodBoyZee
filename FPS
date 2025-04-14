@@ -1,0 +1,187 @@
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+
+local player = Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+
+-- === FPS GUI ===
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "RoundedFPSGui"
+screenGui.ResetOnSpawn = false
+screenGui.IgnoreGuiInset = true
+screenGui.Parent = playerGui
+
+local mainFrame = Instance.new("Frame")
+mainFrame.Size = UDim2.new(0, 140, 0, 50)
+mainFrame.Position = UDim2.new(1, -150, 0, 10)
+mainFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+mainFrame.BorderSizePixel = 0
+mainFrame.Active = true
+mainFrame.Draggable = false
+mainFrame.Parent = screenGui
+
+Instance.new("UICorner", mainFrame).CornerRadius = UDim.new(0, 10)
+
+local nameLabel = Instance.new("TextLabel", mainFrame)
+nameLabel.Size = UDim2.new(1, 0, 0, 20)
+nameLabel.Position = UDim2.new(0, 0, 0, 0)
+nameLabel.BackgroundTransparency = 1
+nameLabel.Text = "GoodBoyZee"
+nameLabel.TextColor3 = Color3.fromRGB(0, 170, 255)
+nameLabel.Font = Enum.Font.GothamBold
+nameLabel.TextSize = 15
+nameLabel.TextXAlignment = Enum.TextXAlignment.Center
+
+local fpsLabel = Instance.new("TextLabel", mainFrame)
+fpsLabel.Size = UDim2.new(1, 0, 0, 28)
+fpsLabel.Position = UDim2.new(0, 0, 0, 22)
+fpsLabel.BackgroundTransparency = 1
+fpsLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+fpsLabel.Font = Enum.Font.GothamBold
+fpsLabel.TextSize = 16
+fpsLabel.Text = "FPS: ..."
+fpsLabel.TextXAlignment = Enum.TextXAlignment.Center
+
+-- Klickbarer Button über dem FPS-GUI
+local clickButton = Instance.new("TextButton")
+clickButton.Size = UDim2.new(1, 0, 1, 0)
+clickButton.Position = UDim2.new(0, 0, 0, 0)
+clickButton.BackgroundTransparency = 1
+clickButton.Text = ""
+clickButton.Parent = mainFrame
+
+-- FPS Berechnung
+local frameCount, timeAccumulator = 0, 0
+RunService.RenderStepped:Connect(function(dt)
+	frameCount += 1
+	timeAccumulator += dt
+
+	if timeAccumulator >= 0.3 then
+		local fps = math.floor(frameCount / timeAccumulator)
+		fpsLabel.Text = "FPS: " .. tostring(fps)
+
+		if fps > 55 then
+			fpsLabel.TextColor3 = Color3.fromRGB(0, 255, 0)
+		elseif fps > 30 then
+			fpsLabel.TextColor3 = Color3.fromRGB(255, 255, 0)
+		else
+			fpsLabel.TextColor3 = Color3.fromRGB(255, 0, 0)
+		end
+
+		frameCount = 0
+		timeAccumulator = 0
+	end
+end)
+
+-- === VOICE CHAT GUI ===
+local savedGuiPosition = nil
+local voiceGui = nil
+
+local function createVoiceGui()
+	if voiceGui then return voiceGui end
+
+	voiceGui = Instance.new("ScreenGui")
+	voiceGui.Name = "VoiceChatActivationGUI"
+	voiceGui.ResetOnSpawn = false
+	voiceGui.Enabled = false
+	voiceGui.Parent = playerGui
+
+	local frame = Instance.new("Frame", voiceGui)
+	frame.Size = UDim2.new(0, 200, 0, 150)
+	frame.Position = savedGuiPosition or UDim2.new(0.5, -100, 0.5, -75)
+	frame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+	frame.BorderSizePixel = 0
+	frame.Active = true
+	frame.Draggable = true
+
+	Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 12)
+
+	local title = Instance.new("TextLabel", frame)
+	title.Size = UDim2.new(1, -30, 0, 24)
+	title.Position = UDim2.new(0, 10, 0, 5)
+	title.BackgroundTransparency = 1
+	title.Text = "GoodBoyZee"
+	title.TextColor3 = Color3.fromRGB(0, 140, 255)
+	title.TextScaled = true
+	title.Font = Enum.Font.FredokaOne
+
+	local close = Instance.new("TextButton", frame)
+	close.Size = UDim2.new(0, 22, 0, 22)
+	close.Position = UDim2.new(1, -26, 0, 4)
+	close.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+	close.Text = "X"
+	close.TextColor3 = Color3.fromRGB(255, 255, 255)
+	close.Font = Enum.Font.GothamBold
+	Instance.new("UICorner", close).CornerRadius = UDim.new(0, 6)
+	close.MouseButton1Click:Connect(function()
+		savedGuiPosition = frame.Position
+		voiceGui.Enabled = false
+	end)
+
+	local voiceButton = Instance.new("TextButton", frame)
+	voiceButton.Size = UDim2.new(0.8, 0, 0, 34)
+	voiceButton.Position = UDim2.new(0.1, 0, 0.3, 0)
+	voiceButton.BackgroundColor3 = Color3.fromRGB(0, 120, 255)
+	voiceButton.Text = "Aktiviere Voice Chat"
+	voiceButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+	voiceButton.TextScaled = true
+	voiceButton.Font = Enum.Font.GothamMedium
+	Instance.new("UICorner", voiceButton).CornerRadius = UDim.new(0, 10)
+
+	voiceButton.MouseButton1Click:Connect(function()
+		local success, err = pcall(function()
+			game:GetService("VoiceChatService"):joinVoice()
+		end)
+		if success then
+			voiceButton.Text = "Aktiviere Voice Chat"
+			voiceButton.BackgroundColor3 = Color3.fromRGB(0, 120, 255)
+		else
+			voiceButton.Text = "Fehler!"
+			voiceButton.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+			task.delay(2, function()
+				voiceButton.Text = "Aktiviere Voice Chat"
+				voiceButton.BackgroundColor3 = Color3.fromRGB(0, 120, 255)
+			end)
+		end
+	end)
+
+	local resetButton = Instance.new("TextButton", frame)
+	resetButton.Size = UDim2.new(0.8, 0, 0, 34)
+	resetButton.Position = UDim2.new(0.1, 0, 0.6, 0)
+	resetButton.BackgroundColor3 = Color3.fromRGB(0, 120, 255)
+	resetButton.Text = "Reset an Position"
+	resetButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+	resetButton.TextScaled = true
+	resetButton.Font = Enum.Font.GothamMedium
+	Instance.new("UICorner", resetButton).CornerRadius = UDim.new(0, 10)
+
+	resetButton.MouseButton1Click:Connect(function()
+		local character = player.Character
+		if character and character:FindFirstChild("HumanoidRootPart") then
+			local savedPosition = character.HumanoidRootPart.Position
+
+			local conn
+			conn = player.CharacterAdded:Connect(function(newChar)
+				local hrp = newChar:WaitForChild("HumanoidRootPart")
+				hrp.CFrame = CFrame.new(savedPosition + Vector3.new(0, 3, 0))
+				conn:Disconnect()
+			end)
+
+			character:BreakJoints()
+		end
+	end)
+
+	return voiceGui
+end
+
+-- Öffne GUI bei Klick auf FPS-GUI
+clickButton.MouseButton1Click:Connect(function()
+	local gui = createVoiceGui()
+	if gui.Enabled then
+		savedGuiPosition = gui:FindFirstChildOfClass("Frame").Position
+		gui.Enabled = false
+	else
+		gui:FindFirstChildOfClass("Frame").Position = savedGuiPosition or UDim2.new(0.5, -100, 0.5, -75)
+		gui.Enabled = true
+	end
+end)
