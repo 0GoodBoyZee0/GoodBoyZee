@@ -1,0 +1,161 @@
+local G2L = {};
+local TweenService = game:GetService("TweenService");
+local Players = game:GetService("Players")
+local Player = Players.LocalPlayer
+local PlayerGui = Player:WaitForChild("PlayerGui")
+
+G2L["1"] = Instance.new("ScreenGui", PlayerGui);
+G2L["1"]["ZIndexBehavior"] = Enum.ZIndexBehavior.Sibling;
+
+G2L["2"] = Instance.new("Frame", G2L["1"]);
+G2L["2"]["BorderSizePixel"] = 0;
+G2L["2"]["BackgroundColor3"] = Color3.fromRGB(24, 24, 26);
+G2L["2"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
+G2L["2"]["Size"] = UDim2.new(0, 249, 0, 141);
+G2L["2"]["Position"] = UDim2.new(0.5, 0, 0.5, 0);
+G2L["2"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["2"]["Name"] = [[Areyousure]];
+
+G2L["3"] = Instance.new("UICorner", G2L["2"]);
+G2L["3"]["CornerRadius"] = UDim.new(0, 4);
+
+G2L["4"] = Instance.new("UIStroke", G2L["2"]);
+G2L["4"]["Thickness"] = 0.7;
+G2L["4"]["Color"] = Color3.fromRGB(59, 59, 59);
+
+G2L["5"] = Instance.new("Frame", G2L["2"]);
+G2L["5"]["BorderSizePixel"] = 0;
+G2L["5"]["BackgroundColor3"] = Color3.fromRGB(32, 32, 36);
+G2L["5"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
+G2L["5"]["Size"] = UDim2.new(0, 233, 0, 126);
+G2L["5"]["Position"] = UDim2.new(0.5, 0, 0.5, 0);
+G2L["5"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["5"]["Name"] = [[YesorNo]];
+
+G2L["6"] = Instance.new("UICorner", G2L["5"]);
+G2L["6"]["CornerRadius"] = UDim.new(0, 4);
+
+G2L["7"] = Instance.new("UIStroke", G2L["5"]);
+G2L["7"]["Thickness"] = 0.7;
+G2L["7"]["Color"] = Color3.fromRGB(59, 59, 59);
+
+-- Yes button
+G2L["8"] = Instance.new("TextButton", G2L["5"]);
+G2L["8"]["BorderSizePixel"] = 0;
+G2L["8"]["TextColor3"] = Color3.fromRGB(168, 168, 168);
+G2L["8"]["TextSize"] = 16;
+G2L["8"]["BackgroundColor3"] = Color3.fromRGB(36, 36, 40);
+G2L["8"]["FontFace"] = Font.new([[rbxassetid://12187365977]], Enum.FontWeight.Medium, Enum.FontStyle.Normal);
+G2L["8"]["Size"] = UDim2.new(0, 95, 0, 33);
+G2L["8"]["Name"] = [[Yes]];
+G2L["8"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["8"]["Text"] = [[Yes]];
+G2L["8"]["Position"] = UDim2.new(0.04721, 0, 0.65873, 0);
+
+G2L["9"] = Instance.new("UICorner", G2L["8"]);
+G2L["9"]["CornerRadius"] = UDim.new(0, 4);
+
+G2L["a"] = Instance.new("UIStroke", G2L["8"]);
+G2L["a"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
+G2L["a"]["Thickness"] = 0.7;
+G2L["a"]["Color"] = Color3.fromRGB(59, 59, 59);
+
+-- No button
+G2L["b"] = Instance.new("TextButton", G2L["5"]);
+G2L["b"]["BorderSizePixel"] = 0;
+G2L["b"]["TextColor3"] = Color3.fromRGB(168, 168, 168);
+G2L["b"]["TextSize"] = 16;
+G2L["b"]["BackgroundColor3"] = Color3.fromRGB(36, 36, 40);
+G2L["b"]["FontFace"] = Font.new([[rbxassetid://12187365977]], Enum.FontWeight.Medium, Enum.FontStyle.Normal);
+G2L["b"]["Size"] = UDim2.new(0, 95, 0, 33);
+G2L["b"]["Name"] = [[No]];
+G2L["b"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["b"]["Text"] = [[No]];
+G2L["b"]["Position"] = UDim2.new(0.54077, 0, 0.65873, 0);
+
+G2L["c"] = Instance.new("UICorner", G2L["b"]);
+G2L["c"]["CornerRadius"] = UDim.new(0, 4);
+
+G2L["d"] = Instance.new("UIStroke", G2L["b"]);
+G2L["d"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
+G2L["d"]["Thickness"] = 0.7;
+G2L["d"]["Color"] = Color3.fromRGB(59, 59, 59);
+
+G2L["e"] = Instance.new("TextLabel", G2L["5"]);
+G2L["e"]["TextWrapped"] = true;
+G2L["e"]["BorderSizePixel"] = 0;
+G2L["e"]["TextSize"] = 17;
+G2L["e"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["e"]["FontFace"] = Font.new([[rbxassetid://12187365977]], Enum.FontWeight.Medium, Enum.FontStyle.Normal);
+G2L["e"]["TextColor3"] = Color3.fromRGB(223, 223, 223);
+G2L["e"]["BackgroundTransparency"] = 1;
+G2L["e"]["Size"] = UDim2.new(0, 200, 0, 50);
+G2L["e"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["e"]["Text"] = [[Would you like to execute Infinite Yield]];
+G2L["e"]["Position"] = UDim2.new(0.06867, 0, 0.09524, 0);
+
+local yesHoverColor = Color3.fromRGB(57, 190, 249)
+local noHoverColor = Color3.fromRGB(255, 0, 0)
+local defaultTextColor = Color3.fromRGB(168, 168, 168)
+
+local tweenInfo = TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+
+local yesHoverTween = TweenService:Create(G2L["8"], tweenInfo, {TextColor3 = yesHoverColor})
+local yesNormalTween = TweenService:Create(G2L["8"], tweenInfo, {TextColor3 = defaultTextColor})
+
+G2L["8"].MouseEnter:Connect(function()
+    yesHoverTween:Play()
+end)
+
+G2L["8"].MouseLeave:Connect(function()
+    yesNormalTween:Play()
+end)
+
+local noHoverTween = TweenService:Create(G2L["b"], tweenInfo, {TextColor3 = noHoverColor})
+local noNormalTween = TweenService:Create(G2L["b"], tweenInfo, {TextColor3 = defaultTextColor})
+
+G2L["b"].MouseEnter:Connect(function()
+    noHoverTween:Play()
+end)
+
+G2L["b"].MouseLeave:Connect(function()
+    noNormalTween:Play()
+end)
+
+local function removeUI()
+    local uiTween = TweenService:Create(G2L["2"], tweenInfo, {Transparency = 1})
+    local strokeTween1 = TweenService:Create(G2L["4"], tweenInfo, {Transparency = 1})
+    local strokeTween2 = TweenService:Create(G2L["7"], tweenInfo, {Transparency = 1})
+    local strokeTween3 = TweenService:Create(G2L["a"], tweenInfo, {Transparency = 1})
+    local strokeTween4 = TweenService:Create(G2L["d"], tweenInfo, {Transparency = 1})
+
+    uiTween:Play()
+    strokeTween1:Play()
+    strokeTween2:Play()
+    strokeTween3:Play()
+    strokeTween4:Play()
+
+    uiTween.Completed:Connect(function()
+        G2L["2"]:Destroy()
+    end)
+end
+
+local function showUI()
+end
+
+showUI()
+
+-- Yes Button Callback
+G2L["8"].MouseButton1Click:Connect(function()
+    removeUI()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/edgeiy/infiniteyield/master/source"))()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/Crimmy12323/Mic-Up/refs/heads/main/micupscript"))()
+end)
+
+-- No Button Callback
+G2L["b"].MouseButton1Click:Connect(function()
+    removeUI()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/Crimmy12323/Mic-Up/refs/heads/main/micupscript"))()
+end)
+
+return G2L["1"], require

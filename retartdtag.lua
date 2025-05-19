@@ -1,0 +1,122 @@
+local Players = game:GetService("Players")
+
+-- List of player names that should get the BillboardGui
+local specialNames = {
+    ["TTV_Muphusa02"] = true,
+    ["AURA_TIKTO09603"] = true,
+    ["yukkycatdoog"] = true
+}
+
+local function createBillboardGui(character)
+    local head = character:FindFirstChild("Head")
+    if not head then return end
+
+    if head:FindFirstChild("SentinelBillboard") then return end
+
+    local G2L = {}
+
+    G2L["1"] = Instance.new("BillboardGui", head)
+    G2L["1"].Active = true
+    G2L["1"].MaxDistance = 50
+    G2L["1"].ExtentsOffsetWorldSpace = Vector3.new(0, 4, 0)
+    G2L["1"].Size = UDim2.new(0, 180, 0, 50)
+    G2L["1"].ClipsDescendants = true
+    G2L["1"].ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    G2L["1"].Name = "SentinelBillboard"
+
+    G2L["2"] = Instance.new("Frame", G2L["1"])
+    G2L["2"].BorderSizePixel = 0
+    G2L["2"].BackgroundColor3 = Color3.fromRGB(69, 69, 69)
+    G2L["2"].Size = UDim2.new(0, 170, 0, 42)
+    G2L["2"].Position = UDim2.new(0, 5, 0, 5)
+    G2L["2"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+
+    Instance.new("UICorner", G2L["2"]).CornerRadius = UDim.new(0, 14)
+
+    local stroke = Instance.new("UIStroke", G2L["2"])
+    stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+    stroke.Thickness = 1.2
+    stroke.Color = Color3.fromRGB(255, 171, 0)
+
+    G2L["5"] = Instance.new("TextLabel", G2L["2"])
+    G2L["5"].TextWrapped = true
+    G2L["5"].BorderSizePixel = 0
+    G2L["5"].TextSize = 16
+    G2L["5"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    G2L["5"].FontFace = Font.new("rbxassetid://12187365977", Enum.FontWeight.Medium, Enum.FontStyle.Normal)
+    G2L["5"].TextColor3 = Color3.fromRGB(255, 255, 255)
+    G2L["5"].BackgroundTransparency = 1
+    G2L["5"].Size = UDim2.new(0, 170, 0, 42)
+    G2L["5"].Position = UDim2.new(0, 10, 0, -1.3)
+    G2L["5"].Text = "Retard"
+
+    G2L["6"] = Instance.new("TextLabel", G2L["2"])
+    G2L["6"].TextSize = 20
+    G2L["6"].BackgroundTransparency = 1
+    G2L["6"].Size = UDim2.new(0, 45, 0, 40)
+    G2L["6"].Position = UDim2.new(0, 2, 0, 0)
+    G2L["6"].Text = "🙉"
+    G2L["6"].TextColor3 = Color3.fromRGB(255, 255, 255)
+    G2L["6"].FontFace = Font.new("rbxasset://fonts/families/SourceSansPro.json", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
+
+    -- Shadows
+    local shadowHolder = Instance.new("Frame", G2L["2"])
+    shadowHolder.Name = "shadowHolder"
+    shadowHolder.ZIndex = 0
+    shadowHolder.Size = UDim2.new(1, 0, 1, 0)
+    shadowHolder.Position = UDim2.new(0, 0, -0.05, 0)
+    shadowHolder.BackgroundTransparency = 1
+
+    local function addShadow(name, transparency)
+        local shadow = Instance.new("ImageLabel", shadowHolder)
+        shadow.Name = name
+        shadow.ZIndex = 0
+        shadow.SliceCenter = Rect.new(10, 10, 118, 118)
+        shadow.ScaleType = Enum.ScaleType.Slice
+        shadow.ImageTransparency = transparency
+        shadow.ImageColor3 = Color3.fromRGB(0, 0, 0)
+        shadow.AnchorPoint = Vector2.new(0.5, 0.5)
+        shadow.Image = "rbxassetid://1316045217"
+        shadow.Size = UDim2.new(1, 3, 1, 3)
+        shadow.BackgroundTransparency = 1
+        shadow.Position = UDim2.new(0.5, 0, 0.5, 2)
+    end
+
+    addShadow("umbraShadow", 0.86)
+    addShadow("penumbraShadow", 0.88)
+    addShadow("ambientShadow", 0.88)
+
+    G2L["1"].Parent = head
+end
+
+local function monitorPlayer(player)
+    -- Only apply to special players
+    if specialNames[player.Name] then
+        -- Function to handle creating BillboardGui for the player's character
+        local function createForCharacter(character)
+            -- Wait for the character's head to be fully loaded
+            local head = character:WaitForChild("Head", 5)
+            if head then
+                createBillboardGui(character)
+            end
+        end
+
+        -- Handle the case when the player is already in game and has a character
+        if player.Character then
+            createForCharacter(player.Character)
+        end
+
+        -- Listen for when a player's character is added (new or respawned)
+        player.CharacterAdded:Connect(function(character)
+            createForCharacter(character)
+        end)
+    end
+end
+
+-- Monitor all players who are already in the game
+for _, player in ipairs(Players:GetPlayers()) do
+    monitorPlayer(player)
+end
+
+-- Listen for new players joining
+Players.PlayerAdded:Connect(monitorPlayer)
